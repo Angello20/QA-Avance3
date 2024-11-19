@@ -1,6 +1,6 @@
 import 'cypress-xpath';
 
-describe('Pruebas de pagina "Customer Groups"', () => {
+describe('Pruebas de pagina "Customer Categories"', () => {
 
     beforeEach(() => {
         cy.on('uncaught:exception', (err, runnable) => {
@@ -24,15 +24,15 @@ describe('Pruebas de pagina "Customer Groups"', () => {
         cy.url().should('include', '/Dashboards');
     });
 
-    it('Caso de Prueba No. 1: Exportar excel de "Customer Groups"', () => {
+    it('Caso de Prueba No. 6: Exportar excel de "Customer Categories"', () => {
         // Visita la pagina que queremos probar
         cy.contains('Sales').click();
 
-        cy.contains('Customer Groups').click();
-        cy.url().should('include', '/CustomerGroups/CustomerGroupList');
+        cy.contains('Customer Categories').click();
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryList');
 
         // Intercepta la solicitud de exportación
-        cy.intercept('POST', '/odata/CustomerGroup/**').as('excelExport');
+        cy.intercept('POST', '/odata/CustomerCategory/**').as('excelExport');
 
         // Simula un clic en el botón de exportación de Excel
         cy.get('#Grid_excelexport').click();
@@ -44,22 +44,22 @@ describe('Pruebas de pagina "Customer Groups"', () => {
         cy.readFile(`${downloadsFolder}/Export.xlsx`).should('exist'); 
     });
 
-    it('Caso de Prueba No. 2: Añadir un nuevo registro en "Customer Groups"', () => {
+    it('Caso de Prueba No. 7: Añadir un nuevo registro en "Customer Categories"', () => {
         cy.contains('Sales').click();
 
 
-        cy.contains('Customer Groups').click();
-        cy.url().should('include', '/CustomerGroups/CustomerGroupList');
+        cy.contains('Customer Categories').click();
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryList');
 
 
         cy.contains('Add').click();
-        cy.url().should('include', '/CustomerGroups/CustomerGroupForm');
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryForm');
 
         // Introduce el nombre del registro en el campo "Name"
-        cy.get('#CustomerGroupForm_Name').type('Art');
+        cy.get('#CustomerCategoryForm_Name').type('Big');
 
         // Añade una descripción en el campo "Description"
-        cy.get('#CustomerGroupForm_Description').type('testing description');
+        cy.get('#CustomerCategoryForm_Description').type('testing description');
 
 
         cy.get('#btnSubmit').click();
@@ -69,19 +69,19 @@ describe('Pruebas de pagina "Customer Groups"', () => {
     });
 
 
-    it('Caso de Prueba No. 3: Intenta añadir un registro sin los campos obligatorios en "Customer Groups" ', () => {
+    it('Caso de Prueba No. 8: Intenta añadir un registro sin los campos obligatorios en "Customer Categories" ', () => {
         cy.contains('Sales').click();
 
 
-        cy.contains('Customer Groups').click();
-        cy.url().should('include', '/CustomerGroups/CustomerGroupList');
+        cy.contains('Customer Categories').click();
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryList');
 
 
         cy.contains('Add').click();
-        cy.url().should('include', '/CustomerGroups/CustomerGroupForm');
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryForm');
 
         // Deja el campo "Name" vacío y llena el campo "Description"
-        cy.get('#CustomerGroupForm_Description').type('testing description');
+        cy.get('#CustomerCategoryForm_Description').type('testing description');
 
         cy.get('#btnSubmit').click();
 
@@ -89,35 +89,32 @@ describe('Pruebas de pagina "Customer Groups"', () => {
         cy.contains('The Name field is required.').should('be.visible');
 
         // Verifica que no se redirige a la página de éxito
-        cy.url().should('include', '/CustomerGroups/CustomerGroupForm');
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryForm');
 
     });
 
-
-
-    it('Caso de Prueba No. 4: Edita un registro en "Customer Groups"', () => {
+    it('Caso de Prueba No. 9: Edita un registro en "Customer Categories"', () => {
         cy.contains('Sales').click();
 
-        cy.contains('Customer Groups').click();
-        cy.url().should('include', '/CustomerGroups/CustomerGroupList');
-
+        cy.contains('Customer Categories').click();
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryList');
 
         // Selecciona un registro específico de la tabla
         cy.get('#Grid').should('be.visible').within(() => {
             
-            cy.contains('td', 'Art').parent().within(() => {
+            cy.contains('td', 'Big').parent().within(() => {
                 cy.get('input[type="checkbox"]').check({ force: true });
             });
         });
 
         cy.contains('Edit').click();
-        cy.url().should('include', '/CustomerGroups/CustomerGroupForm');
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryForm');
 
         // Introduce el nombre del registro en el campo "Name"
-        cy.get('#CustomerGroupForm_Name').clear().type('Art');
+        cy.get('#CustomerCategoryForm_Name').clear().type('Big');
 
         // Añade una descripción en el campo "Description"
-        cy.get('#CustomerGroupForm_Description').clear().type('testing description');
+        cy.get('#CustomerCategoryForm_Description').clear().type('testing description');
 
         cy.get('#btnSubmit').click();
 
@@ -125,29 +122,27 @@ describe('Pruebas de pagina "Customer Groups"', () => {
         cy.contains('Success update existing data.').should('be.visible');
     });
 
-
-
-
-    it('Caso de Prueba No. 5: Intenta editar un registro sin los campos obligatorios en "Customer Groups"', () => {
+    it('Caso de Prueba No. 10: Intenta editar un registro sin los campos obligatorios en "Customer Categories"', () => {
         cy.contains('Sales').click();
 
-        cy.contains('Customer Groups').click();
-        cy.url().should('include', '/CustomerGroups/CustomerGroupList');
+        cy.contains('Customer Categories').click();
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryList');
 
         // Selecciona un registro específico de la tabla
         cy.get('#Grid').should('be.visible').within(() => {
-            cy.contains('td', 'Art').parent().within(() => {
+            
+            cy.contains('td', 'Big').parent().within(() => {
                 cy.get('input[type="checkbox"]').check({ force: true });
             });
         });
 
         cy.contains('Edit').click();
-        cy.url().should('include', '/CustomerGroups/CustomerGroupForm');
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryForm');
 
-        cy.get('#CustomerGroupForm_Name').clear();
+        cy.get('#CustomerCategoryForm_Name').clear();
 
         // Introduce una descripción opcional en el campo "Description"
-        cy.get('#CustomerGroupForm_Description').clear().type('testing description');
+        cy.get('#CustomerCategoryForm_Description').clear().type('testing description');
 
         cy.get('#btnSubmit').click();
 
@@ -155,10 +150,8 @@ describe('Pruebas de pagina "Customer Groups"', () => {
         cy.contains('The Name field is required.').should('be.visible');
 
         // Verifica que no se redirige a la página de éxito
-        cy.url().should('include', '/CustomerGroups/CustomerGroupForm');
-
+        cy.url().should('include', '/CustomerCategories/CustomerCategoryForm');
         
     });
     
-
-}); 
+});
