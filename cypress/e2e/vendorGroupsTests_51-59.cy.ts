@@ -229,54 +229,42 @@ describe('Pruebas de pagina "Vendor Groups"', () => {
 
 
     });
-    /* Casos de búsquedas todavía no están terminados
+
     it('Caso de Prueba No. 58: Realizar búsqueda en "Vendor Groups" por "Name" o "Description"', () => {
+        // Visita la página que queremos probar
         cy.contains('Purchase').click();
-
 
         cy.contains('Vendor Groups').click();
         cy.url().should('include', '/VendorGroups/VendorGroupList');
 
-        // Introduce el nombre del registro en el campo "Name"
+        // Realiza la búsqueda
         cy.get('#Grid_searchbar').type('Freelancer');
-
         cy.get('#Grid_searchbutton').click();
 
-        // Verifica que las filas visibles en la tabla contengan solo el término buscado
-        cy.get('#Grid tbody tr').each(($row) => {
-            cy.wrap($row).within(() => {
-                cy.get('td').should('contain.text', 'Freelancer'); // Asegúrate de que cada fila contenga "Freelancer"
-            });
+        cy.get('#Grid').should('be.visible').within(() => {
+            cy.contains('td', 'Freelancer')
         });
 
-        // Verifica que no haya filas adicionales si esperas solo una coincidencia
-        cy.get('#Grid tbody tr').should('have.length', 1); // Ajusta según el número esperado de resultados
+        // Verifica que haya solo una fila de coincidencia
+        cy.get('#Grid_content_table tbody tr').should('have.length', 1);
     });
-    
 
-    Casos de búsquedas todavía no están terminados
+
     it('Caso de Prueba No. 59: Realizar búsqueda en "Vendor Groups" sin coincidencia', () => {
+        // Visita la página que queremos probar
         cy.contains('Purchase').click();
-
 
         cy.contains('Vendor Groups').click();
         cy.url().should('include', '/VendorGroups/VendorGroupList');
 
-        // Introduce el nombre del registro en el campo "Name"
-        cy.get('#Grid_searchbar').type('Freelancer');
-
+        // Realiza la búsqueda
+        cy.get('#Grid_searchbar').type('salesman');
         cy.get('#Grid_searchbutton').click();
 
-        // Verifica que las filas visibles en la tabla contengan solo el término buscado
-        cy.get('#Grid tbody tr').each(($row) => {
-            cy.wrap($row).within(() => {
-                cy.get('td').should('contain.text', 'Freelancer'); // Asegúrate de que cada fila contenga "Freelancer"
-            });
+        cy.get('#Grid').should('be.visible').within(() => {
+            cy.contains('td', 'No records to display')
         });
 
-        // Verifica que no haya filas adicionales si esperas solo una coincidencia
-        cy.get('#Grid tbody tr').should('have.length', 1); // Ajusta según el número esperado de resultados
     });
-    */
 
 }); 
