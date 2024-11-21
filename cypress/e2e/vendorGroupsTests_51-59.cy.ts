@@ -160,5 +160,123 @@ describe('Pruebas de pagina "Vendor Groups"', () => {
 
     });
 
+    it('Caso de Prueba No. 56: Elimina un registro en "Vendor Groups"', () => {
+        cy.contains('Purchase').click();
+
+        cy.contains('Vendor Groups').click();
+        cy.url().should('include', '/VendorGroups/VendorGroupList');
+
+        // Selecciona un registro específico de la tabla
+        cy.get('#Grid').should('be.visible').within(() => {
+            cy.contains('td', 'TestEdited').parent().within(() => {
+                cy.get('input[type="checkbox"]').check({ force: true });
+            });
+        });
+
+        cy.contains('Delete').click();
+
+        // Verifica que aparece el mensaje de confirmación
+        cy.contains('Are you sure you want to permanently delete these items?').should('be.visible');
+
+        // Confirma la acción haciendo clic en "Ok"
+        cy.get('.e-dialog .e-primary').click();
+
+        // Verifica que la URL contiene la acción "delete"
+        cy.url().should('include', '/VendorGroups/VendorGroupForm').and('include', 'action=delete');
+
+        cy.get('#btnSubmit').click();
+
+        // Resultado esperado: Mensaje de error
+        cy.contains('Success delete existing data.').should('be.visible');
+
+
+    });
+
+    it('Caso de Prueba No. 57: Intento de eliminar un registro en "Vendor Groups" sin los campos obligatorios', () => {
+        cy.contains('Purchase').click();
+
+        cy.contains('Vendor Groups').click();
+        cy.url().should('include', '/VendorGroups/VendorGroupList');
+
+        // Selecciona un registro específico de la tabla
+        cy.get('#Grid').should('be.visible').within(() => {
+            cy.contains('td', 'Freelancer').parent().within(() => {
+                cy.get('input[type="checkbox"]').check({ force: true });
+            });
+        });
+
+        cy.contains('Delete').click();
+
+        // Verifica que aparece el mensaje de confirmación
+        cy.contains('Are you sure you want to permanently delete these items?').should('be.visible');
+
+        // Confirma la acción haciendo clic en "Ok"
+        cy.get('.e-dialog .e-primary').click();
+
+        // Verifica que la URL contiene la acción "delete"
+        cy.url().should('include', '/VendorGroups/VendorGroupForm').and('include', 'action=delete');
+
+        // Borra el nombre del registro
+        cy.get('#VendorGroupForm_Name').clear();
+
+        cy.get('#btnSubmit').click();
+
+        // Resultado esperado: Mensaje de error
+        cy.contains('The Name field is required.').should('be.visible');
+
+        // Verifica que no se redirige a la página de éxito
+        cy.url().should('include', '/VendorGroups/VendorGroupForm');
+
+
+    });
+    /* Casos de búsquedas todavía no están terminados
+    it('Caso de Prueba No. 58: Realizar búsqueda en "Vendor Groups" por "Name" o "Description"', () => {
+        cy.contains('Purchase').click();
+
+
+        cy.contains('Vendor Groups').click();
+        cy.url().should('include', '/VendorGroups/VendorGroupList');
+
+        // Introduce el nombre del registro en el campo "Name"
+        cy.get('#Grid_searchbar').type('Freelancer');
+
+        cy.get('#Grid_searchbutton').click();
+
+        // Verifica que las filas visibles en la tabla contengan solo el término buscado
+        cy.get('#Grid tbody tr').each(($row) => {
+            cy.wrap($row).within(() => {
+                cy.get('td').should('contain.text', 'Freelancer'); // Asegúrate de que cada fila contenga "Freelancer"
+            });
+        });
+
+        // Verifica que no haya filas adicionales si esperas solo una coincidencia
+        cy.get('#Grid tbody tr').should('have.length', 1); // Ajusta según el número esperado de resultados
+    });
+    
+
+    Casos de búsquedas todavía no están terminados
+    it('Caso de Prueba No. 59: Realizar búsqueda en "Vendor Groups" sin coincidencia', () => {
+        cy.contains('Purchase').click();
+
+
+        cy.contains('Vendor Groups').click();
+        cy.url().should('include', '/VendorGroups/VendorGroupList');
+
+        // Introduce el nombre del registro en el campo "Name"
+        cy.get('#Grid_searchbar').type('Freelancer');
+
+        cy.get('#Grid_searchbutton').click();
+
+        // Verifica que las filas visibles en la tabla contengan solo el término buscado
+        cy.get('#Grid tbody tr').each(($row) => {
+            cy.wrap($row).within(() => {
+                cy.get('td').should('contain.text', 'Freelancer'); // Asegúrate de que cada fila contenga "Freelancer"
+            });
+        });
+
+        // Verifica que no haya filas adicionales si esperas solo una coincidencia
+        cy.get('#Grid tbody tr').should('have.length', 1); // Ajusta según el número esperado de resultados
+    });
+    */
 
 }); 
