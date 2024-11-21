@@ -39,7 +39,7 @@
     "@types/jasmine": "~5.1.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^18.18.0",
-    "cypress": "latest",
+    "cypress": "^13.16.0",
     "cypress-xpath": "^2.0.1",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
@@ -48,5 +48,10 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.5.2"
-  }
+  },
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
