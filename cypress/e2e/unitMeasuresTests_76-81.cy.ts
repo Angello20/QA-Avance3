@@ -24,7 +24,7 @@ describe('Pruebas de pagina "Unit Measures"', () => {
         cy.url().should('include', '/Dashboards');
     });
 
-    it('Caso de Prueba No. 76: Añadir un nuevo registro en "Unit Measures"', () => {
+    it('Caso de Prueba No. 76: Añade un nuevo registro en "Unit Measures"', () => {
         cy.contains('Inventory').click();
 
 
@@ -167,7 +167,7 @@ describe('Pruebas de pagina "Unit Measures"', () => {
         // Introduce el nombre del registro en el campo "Name"
         cy.get('#UnitMeasureForm_Name').clear().type('liter');
     
-        // Introduce una descripción opcional en el campo "Description"
+        // Introduce una descripción en el campo "Description"
         cy.get('#UnitMeasureForm_Description').clear().type('Unidad de volumen');
     
         cy.get('#btnSubmit').click();
@@ -176,5 +176,48 @@ describe('Pruebas de pagina "Unit Measures"', () => {
         cy.contains('Success delete existing data.').should('be.visible');
     });
     
+
+
+
+    it('Caso de Prueba No. 81: Intenta eliminar un registro sin los campos obligatorios en "Unit Measures"', () => {
+        cy.contains('Inventory').click();
+    
+        cy.contains('Unit Measures').click();
+        cy.url().should('include', '/UnitMeasures/UnitMeasureList');
+    
+        // Selecciona un registro específico de la tabla
+        cy.get('#Grid').should('be.visible').within(() => {
+            cy.contains('td', 'kg').parent().within(() => {
+                cy.get('input[type="checkbox"]').check({ force: true });
+            });
+        });
+    
+        cy.contains('Delete').click();
+    
+        // Verifica que aparece el mensaje de confirmación
+        cy.contains('Are you sure you want to permanently delete these items?').should('be.visible');
+    
+        // Confirma la acción haciendo clic en "Ok"
+        cy.get('.e-dialog .e-primary').click();
+    
+        // Verifica que la URL contiene la acción "delete"
+        cy.url().should('include', '/UnitMeasures/UnitMeasureForm').and('include', 'action=delete');
+    
+        // Limpia el campo "Name" para dejarlo vacío
+        cy.get('#UnitMeasureForm_Name').clear();
+    
+        // Introduce una descripción en el campo "Description"
+        cy.get('#UnitMeasureForm_Description').clear().type('Unidad de volumen');
+    
+        cy.get('#btnSubmit').click();
+    
+        // Resultado esperado: Mensaje de error 
+        cy.contains('The Name field is required.').should('be.visible');
+    
+    });
+
+    
+    
+
 
 }); 
