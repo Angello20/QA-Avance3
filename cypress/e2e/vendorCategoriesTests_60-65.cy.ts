@@ -168,7 +168,7 @@ describe('Pruebas de pagina "Vendor Categories"', () => {
 
         // Selecciona un registro específico de la tabla
         cy.get('#Grid').should('be.visible').within(() => {
-            cy.contains('td', 'Large').parent().within(() => {
+            cy.contains('td', 'TestEdited').parent().within(() => {
                 cy.get('input[type="checkbox"]').check({ force: true });
             });
         });
