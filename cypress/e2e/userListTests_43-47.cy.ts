@@ -50,31 +50,31 @@ describe('Pruebas de pagina "User List"', () => {
     it('Caso de Prueba No. 44: Añadir una nueva entrada en "User List"', () => {
         // Navega a la pestaña "Settings"
         cy.contains('Settings').click();
-
+    
         // Navega a la pestaña "User List"
         cy.contains('User List').click();
         cy.url().should('include', '/UserList');
-
+    
         // Simula un clic en el botón de añadir nueva entrada
         cy.contains('Add').click();
-        cy.url().should('include', '/UserList/Form');
-
+        cy.url().should('include', '/Users/UserForm');
+    
         // Llena los datos correspondientes en los campos
         cy.get('#UserListForm_FullName').type('Pablo Peraza');
         cy.get('#UserListForm_JobTitle').type('Developer');
         cy.get('#UserListForm_Address').type('123 Street');
         cy.get('#UserListForm_City').type('San Jose');
         cy.get('#UserListForm_State').type('CA');
-        cy.get('#UserListForm_Country').type('Costa RIca');
+        cy.get('#UserListForm_Country').type('Costa Rica');
         cy.get('#UserListForm_ZipCode').type('94016');
         cy.get('#UserListForm_UserType').select('Admin');
         cy.get('#UserListForm_IsDefaultAdmin').check();
         cy.get('#UserListForm_IsOnline').check();
         cy.get('#UserListForm_SelectedCompany').select('Default Company, LLC.');
-
+    
         // Envía el formulario
         cy.get('#btnSubmit').click();
-
+    
         // Verifica que se muestre una notificación de éxito
         cy.contains('Success create new data.').should('be.visible');
     });
@@ -82,83 +82,88 @@ describe('Pruebas de pagina "User List"', () => {
     it('Caso de Prueba No. 45: Añadir sin el campo "FullName" en "User List"', () => {
         // Navega a la pestaña "Settings"
         cy.contains('Settings').click();
-
+    
         // Navega a la pestaña "User List"
         cy.contains('User List').click();
         cy.url().should('include', '/UserList');
-
+    
         // Simula un clic en el botón de añadir nueva entrada
         cy.contains('Add').click();
-        cy.url().should('include', '/UserList/Form');
-
+        cy.url().should('include', '/Users/UserForm');
+    
         // Llena los datos correspondientes en los campos
         cy.get('#UserListForm_JobTitle').type('Developer');
         cy.get('#UserListForm_Address').type('123 Street');
         cy.get('#UserListForm_City').type('San Jose');
         cy.get('#UserListForm_State').type('CA');
-        cy.get('#UserListForm_Country').type('Costa RIca');
+        cy.get('#UserListForm_Country').type('Costa Rica');
         cy.get('#UserListForm_ZipCode').type('94016');
         cy.get('#UserListForm_UserType').select('Admin');
         cy.get('#UserListForm_IsDefaultAdmin').check();
         cy.get('#UserListForm_IsOnline').check();
         cy.get('#UserListForm_SelectedCompany').select('Default Company, LLC.');
-
+    
         // Envía el formulario
         cy.get('#btnSubmit').click();
-
+    
         // Verifica que se muestre una notificación de error
         cy.contains('The FullName field is required.').should('be.visible');
     });
+    
+    
 
     it('Caso de Prueba No. 46: Añadir sin el campo "SelectedCompany" en "User List"', () => {
         // Navega a la pestaña "Settings"
         cy.contains('Settings').click();
-
+    
         // Navega a la pestaña "User List"
         cy.contains('User List').click();
         cy.url().should('include', '/UserList');
-
+    
         // Simula un clic en el botón de añadir nueva entrada
         cy.contains('Add').click();
-        cy.url().should('include', '/UserList/Form');
-
+        cy.url().should('include', '/Users/UserForm');  
+    
         // Llena los datos correspondientes en los campos
         cy.get('#UserListForm_FullName').type('Pablo Peraza');
         cy.get('#UserListForm_JobTitle').type('Developer');
         cy.get('#UserListForm_Address').type('123 Street');
         cy.get('#UserListForm_City').type('San Jose');
         cy.get('#UserListForm_State').type('CA');
-        cy.get('#UserListForm_Country').type('Costa RIca');
+        cy.get('#UserListForm_Country').type('Costa Rica');
         cy.get('#UserListForm_ZipCode').type('94016');
         cy.get('#UserListForm_UserType').select('Admin');
         cy.get('#UserListForm_IsDefaultAdmin').check();
         cy.get('#UserListForm_IsOnline').check();
-
+    
         // Envía el formulario
         cy.get('#btnSubmit').click();
-
+    
         // Verifica que se muestre una notificación de error
         cy.contains('The SelectedCompany field is required.').should('be.visible');
     });
-
+    
     it('Caso de Prueba No. 47: Verificar opción "Items per page" en "User List"', () => {
         // Navega a la pestaña "Settings"
         cy.contains('Settings').click();
-
+    
         // Navega a la pestaña "User List"
         cy.contains('User List').click();
         cy.url().should('include', '/UserList');
-
+    
         // Lista de opciones a probar
         const itemsPerPageOptions = [10, 20, 50, 100, 200, 'all'];
-
+    
         // Itera sobre cada opción y verifica el cambio en la lista
         itemsPerPageOptions.forEach(option => {
             cy.contains('Items per page').click();
             cy.contains(option.toString()).click();
-            cy.wait(2000); // Espera a que la lista se actualice
-            // Verificación: La lista debería mostrar la cantidad de elementos seleccionados o menos, si hay menos datos disponibles
+            cy.wait(2000);
+    
+            // Verifica que la página cambie correctamente
+            cy.get('.e-link.e-numericitem').should('be.visible');  // Verifica que el número de página sea visible
             cy.get('.user-list-item').should('have.length.lte', option === 'all' ? Infinity : option);
         });
     });
+    
 });

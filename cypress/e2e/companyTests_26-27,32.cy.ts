@@ -43,22 +43,22 @@ describe('Pruebas de pagina "Company"', () => {
         const downloadsFolder = Cypress.config('downloadsFolder'); 
         cy.readFile(`${downloadsFolder}/Export.xlsx`).should('exist');
 
-        // Abre el archivo y verifica su contenido
-        // Nota: La verificación del contenido del archivo se hace fuera de Cypress
     });
 
     it('Caso de Prueba No. 27: Añadir una nueva compañía en "Company"', () => {
         // Navega a la pestaña "Settings"
         cy.contains('Settings').click();
-
+    
         // Navega a la pestaña "Company"
         cy.contains('Company').click();
         cy.url().should('include', '/Company');
-
-        // Simula un clic en el botón de añadir nueva compañía
-        cy.contains('Add').click();
-        cy.url().should('include', '/Company/Form');
-
+    
+        // Verifica que el botón "Add" esté visible y habilitado, luego haz clic
+        cy.contains('Add').should('be.visible').and('not.be.disabled').click();
+    
+        // Incrementa el tiempo de espera para verificar la redirección
+        cy.url({ timeout: 10000 }).should('include', '/Company/Form');
+    
         // Llena los datos correspondientes en los campos
         cy.get('#CompanyForm_Name').type('Empresa01');
         cy.get('#CompanyForm_Currency').select('US$');
@@ -66,10 +66,10 @@ describe('Pruebas de pagina "Company"', () => {
         cy.get('#CompanyForm_Street').type('123 Elm Street');
         cy.get('#CompanyForm_PhoneNumber').type('123-456-7890');
         cy.get('#CompanyForm_EmailAddress').type('empresa01@example.com');
-
+    
         // Envía el formulario
         cy.get('#btnSubmit').click();
-
+    
         // Verifica que se muestre una notificación de éxito
         cy.contains('Success create new data.').should('be.visible');
     });
@@ -89,7 +89,7 @@ describe('Pruebas de pagina "Company"', () => {
         itemsPerPageOptions.forEach(option => {
             cy.contains('Items per page').click();
             cy.contains(option.toString()).click();
-            cy.wait(2000); // Espera a que la lista se actualice
+            cy.wait(2000);
             // Verificación: La lista debería mostrar la cantidad de elementos seleccionados o menos, si hay menos datos disponibles
             cy.get('.company-list-item').should('have.length.lte', option === 'all' ? Infinity : option);
         });
