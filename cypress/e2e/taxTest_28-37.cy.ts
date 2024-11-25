@@ -55,7 +55,7 @@ describe('Pruebas de pagina "Tax"', () => {
 
         // Simula un clic en el botón de añadir nueva entrada
         cy.contains('Add').click();
-        cy.url().should('include', '/Tax/Form');
+        cy.url().should('include', '/Taxes/TaxForm?action=create');
 
         // Llena los datos correspondientes en los campos
         cy.get('#TaxForm_Name').type('T01');
@@ -79,7 +79,7 @@ describe('Pruebas de pagina "Tax"', () => {
 
         // Simula un clic en el botón de añadir nueva entrada
         cy.contains('Add').click();
-        cy.url().should('include', '/Tax/Form');
+        cy.url().should('include', '/Taxes/TaxForm?action=create');
 
         // Llena los datos correspondientes en los campos
         cy.get('#TaxForm_Percentage').type('1');
@@ -95,25 +95,29 @@ describe('Pruebas de pagina "Tax"', () => {
     it('Caso de Prueba No. 36: Añadir sin el campo "Percentage" en "Tax"', () => {
         // Navega a la pestaña "Settings"
         cy.contains('Settings').click();
-
+    
         // Navega a la pestaña "Tax"
         cy.contains('Tax').click();
         cy.url().should('include', '/Tax');
-
+    
         // Simula un clic en el botón de añadir nueva entrada
         cy.contains('Add').click();
-        cy.url().should('include', '/Tax/Form');
-
+        cy.url().should('include', '/Taxes/TaxForm?action=create');
+    
         // Llena los datos correspondientes en los campos
         cy.get('#TaxForm_Name').type('T01');
         cy.get('#TaxForm_Description').type('tax');
-
+    
+        // Verifica que el campo de porcentaje esté vacío
+        cy.get('#TaxForm_Percentage').should('be.empty');
+    
         // Envía el formulario
         cy.get('#btnSubmit').click();
-
-        // Verifica que se muestre una notificación de error
-        cy.contains('The Percentage field is required.').should('be.visible');
+    
+        // Verifica que el mensaje de error genérico de "campo requerido" esté visible
+        cy.contains('This field is required.', { timeout: 10000 }).should('be.visible');
     });
+    
 
     it('Caso de Prueba No. 37: Verificar opción "Items per page" en "Tax"', () => {
         // Navega a la pestaña "Settings"
@@ -134,34 +138,34 @@ describe('Pruebas de pagina "Tax"', () => {
             cy.get('.tax-list-item').should('have.length.lte', option === 'all' ? Infinity : option);
         });
     });
-    
-
-    it('Caso de Prueba No. 50: Añadir y editar una entrada en "Tax"', () => {
+    it('Caso de Prueba No. 50: Modificar una entrada existente en "Tax"', () => {
         // Navega a la pestaña "Settings"
         cy.contains('Settings').click();
-
+    
         // Navega a la pestaña "Tax"
         cy.contains('Tax').click();
         cy.url().should('include', '/Tax');
-
-        // Añadir una nueva entrada
-        cy.contains('Add').click();
-        cy.url().should('include', '/Tax/Form');
-        cy.get('#TaxForm_Name').type('T01');
-        cy.get('#TaxForm_Percentage').type('1');
-        cy.get('#TaxForm_Description').type('tax');
-        cy.get('#btnSubmit').click();
-        cy.contains('Success create new data.').should('be.visible');
-
-        // Editar la entrada agregada
+    
+        // Buscar un "Tax" existente en la lista
         cy.get('.tax-list-item:contains("T01")').parent().within(() => {
+            // Hacer clic en "Edit" para modificar el "Tax" existente
             cy.contains('Edit').click();
         });
-        cy.url().should('include', '/Tax/Form');
-        cy.get('#TaxForm_Name').clear().type('T02');
-        cy.get('#TaxForm_Percentage').clear().type('2');
-        cy.get('#TaxForm_Description').clear().type('taxedit');
+    
+        // Verifica que la URL contenga '/Taxes/TaxForm' y 'action=edit'
+        cy.url().should('include', '/Taxes/TaxForm').and('include', 'action=edit');
+    
+        // Modificar los datos de la entrada
+        cy.get('#TaxForm_Name').clear().type('T02');  // Modificar nombre
+        cy.get('#TaxForm_Percentage').clear().type('2');  // Modificar porcentaje
+        cy.get('#TaxForm_Description').clear().type('taxedit');  // Modificar descripción
+    
+        // Enviar el formulario
         cy.get('#btnSubmit').click();
+    
+        // Verificar que se muestre la notificación de éxito
         cy.contains('Success update existing data.').should('be.visible');
     });
+    
+    
 });

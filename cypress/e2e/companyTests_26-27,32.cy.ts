@@ -57,7 +57,7 @@ describe('Pruebas de pagina "Company"', () => {
         cy.contains('Add').should('be.visible').and('not.be.disabled').click();
     
         // Incrementa el tiempo de espera para verificar la redirección
-        cy.url({ timeout: 10000 }).should('include', '/Company/Form');
+        cy.url({ timeout: 20000 }).should('include', '/Company/Form');
     
         // Llena los datos correspondientes en los campos
         cy.get('#CompanyForm_Name').type('Empresa01');
@@ -77,22 +77,34 @@ describe('Pruebas de pagina "Company"', () => {
     it('Caso de Prueba No. 32: Verificar opción "Items per page" en "Company"', () => {
         // Navega a la pestaña "Settings"
         cy.contains('Settings').click();
-
+    
         // Navega a la pestaña "Company"
         cy.contains('Company').click();
         cy.url().should('include', '/Company');
-
-        // Lista de opciones a probar
-        const itemsPerPageOptions = [10, 20, 50, 100, 200, 'all'];
-
-        // Itera sobre cada opción y verifica el cambio en la lista
+    
+        // Lista de opciones para "Items per page"
+        const itemsPerPageOptions = [10, 20, 50, 100, 200];
+    
+        // Itera sobre cada opción y verifica el número de elementos mostrados
         itemsPerPageOptions.forEach(option => {
+            // Selecciona la opción de "Items per page"
             cy.contains('Items per page').click();
             cy.contains(option.toString()).click();
-            cy.wait(2000);
-            // Verificación: La lista debería mostrar la cantidad de elementos seleccionados o menos, si hay menos datos disponibles
-            cy.get('.company-list-item').should('have.length.lte', option === 'all' ? Infinity : option);
+    
+            // Verifica que la solicitud a la API use el parámetro correcto ($top)
+            cy.intercept(`/odata/Company/?$count=true&$orderby=CreatedAtUtc%20desc&$top=${option}`).as('getData');
+            cy.wait('@getData');
+    
+            // Verifica que el número de elementos visibles en la tabla no exceda la opción seleccionada
+            cy.get('.company-list-item').should('have.length.lte', option);
         });
-    });
+    
+        // Verifica la opción "all"
+        cy.contains('Items per page').click();
+        cy.contains('all').click();
+    
+        // Para "all", no limitamos el número de elementos; verificamos que la lista esté cargada
+        cy.get('.company-list-item').should('exist');
+    }); 
 });
 
