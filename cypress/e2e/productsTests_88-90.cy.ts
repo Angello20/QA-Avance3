@@ -90,7 +90,7 @@ describe('Pruebas de pagina "Products"', () => {
     });
 
 
-    it.only('Caso de Prueba No. 90: Edita un registro en "Products"', () => {
+    it('Caso de Prueba No. 90: Edita un registro en "Products"', () => {
         cy.contains('Inventory').click();
 
         cy.contains('Products').click();
