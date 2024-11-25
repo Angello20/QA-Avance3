@@ -230,41 +230,56 @@ describe('Pruebas de pagina "Vendor Groups"', () => {
 
     });
 
-    it('Caso de Prueba No. 58: Realizar búsqueda en "Vendor Groups" por "Name" o "Description"', () => {
-        // Visita la página que queremos probar
+    it('Caso de Prueba: Realizar búsqueda y esperar la solicitud correcta', () => {
         cy.contains('Purchase').click();
 
         cy.contains('Vendor Groups').click();
         cy.url().should('include', '/VendorGroups/VendorGroupList');
 
+        cy.intercept('GET', '/odata/VendorGroup/**').as('searchRequest');
+
         // Realiza la búsqueda
-        cy.get('#Grid_searchbar').type('Freelancer');
+        cy.get('#Grid_searchbar').clear().type('freelancer');
         cy.get('#Grid_searchbutton').click();
 
-        cy.get('#Grid').should('be.visible').within(() => {
-            cy.contains('td', 'Freelancer')
-        });
+        // Espera la solicitud de búsqueda
+        cy.wait('@searchRequest', { timeout: 10000 });
 
-        // Verifica que haya solo una fila de coincidencia
+        // Verifica que la tabla contiene los resultados correctos
         cy.get('#Grid_content_table tbody tr').should('have.length', 1);
+        cy.get('#Grid_content_table tbody tr td[aria-colindex="3"]').should('have.text', 'Freelancer');
     });
+
 
 
     it('Caso de Prueba No. 59: Realizar búsqueda en "Vendor Groups" sin coincidencia', () => {
-        // Visita la página que queremos probar
         cy.contains('Purchase').click();
 
         cy.contains('Vendor Groups').click();
         cy.url().should('include', '/VendorGroups/VendorGroupList');
 
+        cy.intercept('GET', '/odata/VendorGroup/**').as('searchRequest');
+
         // Realiza la búsqueda
-        cy.get('#Grid_searchbar').type('salesman');
+        cy.get('#Grid_searchbar').clear().type('salesman');
         cy.get('#Grid_searchbutton').click();
 
-        cy.get('#Grid').should('be.visible').within(() => {
-            cy.contains('td', 'No records to display')
-        });
+        // Espera la solicitud de búsqueda
+        cy.wait('@searchRequest', { timeout: 10000 }); // Agrega un pequeño retraso para asegurar que la tabla se actualice
 
+        // Verifica que la tabla muestra "No records to display"
+        cy.get('#Grid_content_table tbody tr.e-emptyrow').should('exist');
+        cy.get('#Grid_content_table tbody tr.e-emptyrow td').should('contain.text', 'No records to display');
     });
+
+
+
+
+
+
+
+
+
+
 
 }); 
