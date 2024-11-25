@@ -203,7 +203,7 @@ describe('Pruebas de pagina "User List"', () => {
         cy.get('#btnSubmit').click();
     
         // Verifica que se muestre una notificación de error por contraseñas no coincidentes
-        cy.contains('The Password and Confirm Password fields do not match.').should('be.visible');
+        cy.contains('The Password and Confirmation Password do not match.').should('be.visible');
     });    
 
 });
