@@ -1,6 +1,6 @@
 import 'cypress-xpath';
 
-describe('Pruebas de pagina "Sequence"', () => {
+describe('Pruebas de pagina "User Profile"', () => {
 
     beforeEach(() => {
         cy.on('uncaught:exception', (err, runnable) => {
@@ -23,25 +23,25 @@ describe('Pruebas de pagina "Sequence"', () => {
         cy.url().should('include', '/Dashboards');
     });
 
-    it('Caso de Prueba No. 48: Exportar Excel de "Sequence"', () => {
+    it('Caso de Prueba No. 40: Exportar Excel de "User Profile"', () => {
         // Navega a la pestaña "Settings"
         cy.contains('Settings').click();
-    
-        // Navega a la pestaña "Sequence"
-        cy.contains('Sequence').click();
-        cy.url({ timeout: 10000 }).should('include', '/NumberSequences/NumberSequenceList');
-    
+
+        // Navega a la pestaña "User Profile"
+        cy.contains('User Profile').click();
+        cy.url().should('include', '/UserProfile');
+
         // Intercepta la solicitud de exportación
-        cy.intercept('POST', '/odata/NumberSequence/**').as('excelExport');
-    
+        cy.intercept('POST', '/odata/UserProfile/**').as('excelExport');
+
         // Simula un clic en el botón de exportación de Excel
         cy.contains('Excel Export').click();
-    
+
         // Espera a que se complete la solicitud de exportación
         cy.wait(4000);
-    
+
         const downloadsFolder = Cypress.config('downloadsFolder'); 
         cy.readFile(`${downloadsFolder}/Export.xlsx`).should('exist');
+
     });
-    
 });

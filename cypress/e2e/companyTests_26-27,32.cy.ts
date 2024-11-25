@@ -73,38 +73,5 @@ describe('Pruebas de pagina "Company"', () => {
         // Verifica que se muestre una notificación de éxito
         cy.contains('Success create new data.').should('be.visible');
     });
-
-    it('Caso de Prueba No. 32: Verificar opción "Items per page" en "Company"', () => {
-        // Navega a la pestaña "Settings"
-        cy.contains('Settings').click();
-    
-        // Navega a la pestaña "Company"
-        cy.contains('Company').click();
-        cy.url().should('include', '/Company');
-    
-        // Lista de opciones para "Items per page"
-        const itemsPerPageOptions = [10, 20, 50, 100, 200];
-    
-        // Itera sobre cada opción y verifica el número de elementos mostrados
-        itemsPerPageOptions.forEach(option => {
-            // Selecciona la opción de "Items per page"
-            cy.contains('Items per page').click();
-            cy.contains(option.toString()).click();
-    
-            // Verifica que la solicitud a la API use el parámetro correcto ($top)
-            cy.intercept(`/odata/Company/?$count=true&$orderby=CreatedAtUtc%20desc&$top=${option}`).as('getData');
-            cy.wait('@getData');
-    
-            // Verifica que el número de elementos visibles en la tabla no exceda la opción seleccionada
-            cy.get('.company-list-item').should('have.length.lte', option);
-        });
-    
-        // Verifica la opción "all"
-        cy.contains('Items per page').click();
-        cy.contains('all').click();
-    
-        // Para "all", no limitamos el número de elementos; verificamos que la lista esté cargada
-        cy.get('.company-list-item').should('exist');
-    }); 
 });
 

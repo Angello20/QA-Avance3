@@ -123,4 +123,87 @@ describe('Pruebas de pagina "User List"', () => {
         cy.contains('The Selected Company field is required.').should('be.visible');
     });
 
+    it('Caso de Prueba No. 44: Añadir un nuevo usuario en "User List" sin llenar el campo "Password"', () => {
+        // Navega a la pestaña "Settings"
+        cy.contains('Settings').click();
+    
+        // Navega a la pestaña "User List"
+        cy.contains('User List').click();
+        cy.url().should('include', '/UserList');
+    
+        // Simula un clic en el botón para añadir un nuevo usuario
+        cy.contains('Add').click();
+        cy.url().should('include', '/Users/UserForm?action=create');
+    
+        // Espera explícitamente a que los campos estén visibles
+        cy.get('span[aria-owns="UserForm_SelectedCompanyId_options"]').click();
+        cy.wait(500);
+        cy.contains('.e-popup .e-list-item', 'Default Company, LLC.').should('be.visible').click();
+    
+        // Deja el campo "Password" vacío
+        cy.get('#UserForm_ConfirmPassword').should('be.visible').type('password123');
+    
+        // Envía el formulario sin llenar el campo "Password"
+        cy.get('#btnSubmit').click();
+    
+        // Verifica que se muestre una notificación de error para el campo "Password"
+        cy.contains('The Password field is required.').should('be.visible');
+    });
+
+    it('Caso de Prueba No. 43: Añadir un nuevo usuario en "User List" sin llenar el campo "Confirm Password"', () => {
+        // Navega a la pestaña "Settings"
+        cy.contains('Settings').click();
+    
+        // Navega a la pestaña "User List"
+        cy.contains('User List').click();
+        cy.url().should('include', '/UserList');
+    
+        // Simula un clic en el botón para añadir un nuevo usuario
+        cy.contains('Add').click();
+        cy.url().should('include', '/Users/UserForm?action=create');
+    
+        // Espera explícitamente a que los campos estén visibles
+        cy.get('span[aria-owns="UserForm_SelectedCompanyId_options"]').click();
+        cy.wait(500);
+        cy.contains('.e-popup .e-list-item', 'Default Company, LLC.').should('be.visible').click();
+    
+        // Llena el campo "Password" pero deja "Confirm Password" vacío
+        cy.get('#UserForm_Password').should('be.visible').type('password123');
+    
+        // Envía el formulario sin llenar el campo "Confirm Password"
+        cy.get('#btnSubmit').click();
+    
+        // Verifica que se muestre una notificación de error para el campo "Confirm Password"
+        cy.contains('The Confirm Password field is required.').should('be.visible');
+    });
+    it('Caso de Prueba No. 45: Añadir un nuevo usuario en "User List" con "Password" diferente a "Confirm Password"', () => {
+        // Navega a la pestaña "Settings"
+        cy.contains('Settings').click();
+    
+        // Navega a la pestaña "User List"
+        cy.contains('User List').click();
+        cy.url().should('include', '/UserList');
+    
+        // Simula un clic en el botón para añadir un nuevo usuario
+        cy.contains('Add').click();
+        cy.url().should('include', '/Users/UserForm?action=create');
+    
+        // Espera explícitamente a que los campos estén visibles
+        cy.get('span[aria-owns="UserForm_SelectedCompanyId_options"]').click();
+        cy.wait(500);
+        cy.contains('.e-popup .e-list-item', 'Default Company, LLC.').should('be.visible').click();
+    
+        // Rellena el campo "Password" con un valor
+        cy.get('#UserForm_Password').should('be.visible').type('password123');
+    
+        // Rellena el campo "Confirm Password" con un valor diferente
+        cy.get('#UserForm_ConfirmPassword').should('be.visible').type('password456');
+    
+        // Envía el formulario con las contraseñas que no coinciden
+        cy.get('#btnSubmit').click();
+    
+        // Verifica que se muestre una notificación de error por contraseñas no coincidentes
+        cy.contains('The Password and Confirm Password fields do not match.').should('be.visible');
+    });    
+
 });
