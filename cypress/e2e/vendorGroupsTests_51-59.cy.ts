@@ -238,8 +238,12 @@ describe('Pruebas de pagina "Vendor Groups"', () => {
 
         cy.intercept('GET', '/odata/VendorGroup/**').as('searchRequest');
 
-        // Realiza la búsqueda
-        cy.get('#Grid_searchbar').clear().type('freelancer');
+        // Realiza la búsqueda con un retraso entre caracteres
+        cy.get('#Grid_searchbar')
+            .should('be.visible')
+            .clear()
+            .type('freelancer', { delay: 250 });
+        cy.wait(500); // Espera para asegurar que el frontend procese la entrada
         cy.get('#Grid_searchbutton').click();
 
         // Espera la solicitud de búsqueda
@@ -254,23 +258,28 @@ describe('Pruebas de pagina "Vendor Groups"', () => {
 
     it('Caso de Prueba No. 59: Realizar búsqueda en "Vendor Groups" sin coincidencia', () => {
         cy.contains('Purchase').click();
-
         cy.contains('Vendor Groups').click();
         cy.url().should('include', '/VendorGroups/VendorGroupList');
 
         cy.intercept('GET', '/odata/VendorGroup/**').as('searchRequest');
 
-        // Realiza la búsqueda
-        cy.get('#Grid_searchbar').clear().type('salesman');
+        // Realiza la búsqueda con un retraso entre caracteres
+        cy.get('#Grid_searchbar')
+            .should('be.visible')
+            .clear()
+            .type('salesman', { delay: 250 });
+        cy.wait(500); // Espera para asegurar que el frontend procese la entrada
+
         cy.get('#Grid_searchbutton').click();
 
-        // Espera la solicitud de búsqueda
-        cy.wait('@searchRequest', { timeout: 10000 }); // Agrega un pequeño retraso para asegurar que la tabla se actualice
+        // Espera a que la solicitud de búsqueda se complete
+        cy.wait('@searchRequest', { timeout: 10000 });
 
         // Verifica que la tabla muestra "No records to display"
         cy.get('#Grid_content_table tbody tr.e-emptyrow').should('exist');
         cy.get('#Grid_content_table tbody tr.e-emptyrow td').should('contain.text', 'No records to display');
     });
+
 
 
 
